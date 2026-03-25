@@ -1653,9 +1653,17 @@ En MERM : ces mécanismes jouent dans la relation soignant-patient et dans la dy
           Lire l'analyse complète
         </a>
       </div>
+      <!-- Bilan de stage -->
+      <div id="sm-bilan-section" style="display:none;margin-top:6px;">
+        <a href="#" id="sm-bilan-link" class="sm-bilan-btn" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Consulter le bilan de stage
+        </a>
+      </div>
       <!-- Zone édition inline (mode édition) -->
       <div id="sm-edit-zone" style="display:none;margin-top:16px;border-top:1px dashed var(--pale);padding-top:14px;">
         <div class="sm-section-title">✏️ Modifier ce stage</div>
+        <div class="sf-row" style="margin-bottom:6px;"><label>Bilan</label><input id="sm-edit-bilan-url" placeholder="Lien bilan de stage (PDF...)" style="font-size:10px;padding:4px 7px;border:1px solid var(--silver);border-radius:3px;width:100%;font-family:inherit;color:var(--slate);"></div>
         <div class="sf-row" style="margin-bottom:6px;"><label>Détail</label><textarea id="sm-edit-detail" style="font-size:10px;padding:4px 7px;border:1px solid var(--silver);border-radius:3px;width:100%;height:70px;font-family:inherit;color:var(--slate);resize:vertical;"></textarea></div>
         <div class="sf-row" style="margin-bottom:6px;"><label>Lien AP</label><input id="sm-edit-ap-url" placeholder="https://... (lien vers votre AP)" style="font-size:10px;padding:4px 7px;border:1px solid var(--silver);border-radius:3px;width:100%;font-family:inherit;color:var(--slate);"></div>
         <div class="sf-row" style="margin-bottom:6px;"><label>Texte AP</label><input id="sm-edit-ap-text" placeholder="ex: Gestion des découvertes fortuites..." style="font-size:10px;padding:4px 7px;border:1px solid var(--silver);border-radius:3px;width:100%;font-family:inherit;color:var(--slate);"></div>
@@ -1681,7 +1689,7 @@ En MERM : ces mécanismes jouent dans la relation soignant-patient et dans la dy
       <div id="xm-bilan-section" style="display:none;margin-top:12px;">
         <a href="#" id="xm-bilan-link" class="sm-bilan-btn" target="_blank">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          Consulter le document officiel
+          <span id="xm-bilan-label">Consulter le document officiel</span>
         </a>
       </div>
       <!-- Edit zone (edit mode only) -->
@@ -2546,11 +2554,23 @@ function openXpModal(item) {
 
   // Bilan / document link
   var bilanUrl = item.dataset.xpBilanUrl || '';
-  var xmBilanSec  = document.getElementById('xm-bilan-section');
-  var xmBilanLink = document.getElementById('xm-bilan-link');
+  var xmBilanSec   = document.getElementById('xm-bilan-section');
+  var xmBilanLink  = document.getElementById('xm-bilan-link');
+  var xmBilanLabel = document.getElementById('xm-bilan-label');
   if (bilanUrl && bilanUrl !== 'LIEN_RELEVE_NOTES_A_COMPLETER' && xmBilanSec && xmBilanLink) {
     xmBilanLink.href = bilanUrl;
     xmBilanSec.style.display = 'block';
+    // Set label based on content
+    if (xmBilanLabel) {
+      var title = item.dataset.xpTitle || '';
+      if (title.indexOf('MERM') > -1 || title.indexOf('Diplôme') > -1) {
+        xmBilanLabel.textContent = 'Consulter le relevé de notes officiel';
+      } else if (title.indexOf('préparatoire') > -1 || title.indexOf('Orcea') > -1) {
+        xmBilanLabel.textContent = 'Consulter le bulletin de notes officiel';
+      } else {
+        xmBilanLabel.textContent = 'Consulter le document officiel';
+      }
+    }
   } else if (xmBilanSec) {
     xmBilanSec.style.display = 'none';
   }
