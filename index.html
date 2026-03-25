@@ -2397,6 +2397,28 @@ function openStageModal(card) {
     document.getElementById('sm-edit-ap-text').value = card.dataset.apText  || (apEl ? apEl.textContent : '');
   }
 
+  // ── Bilan de stage ──────────────────────────────────────
+  var bilanUrl = card.dataset.bilanUrl || '';
+  var bilanSec  = document.getElementById('sm-bilan-section');
+  var bilanLink = document.getElementById('sm-bilan-link');
+  if (bilanUrl && bilanSec && bilanLink) {
+    bilanLink.href = bilanUrl;
+    bilanSec.style.display = 'block';
+  } else if (bilanSec) {
+    bilanSec.style.display = 'none';
+  }
+
+  // ── AP link ─────────────────────────────────────────────
+  var apUrl2 = card.dataset.apUrl || '';
+  if (apUrl2 && smApLink) {
+    smApLink.href = apUrl2;
+    smApLink.style.display = 'inline-flex';
+  }
+
+  // ── Edit zone bilan field ───────────────────────────────
+  var bilanInput = document.getElementById('sm-edit-bilan-url');
+  if (bilanInput) bilanInput.value = bilanUrl;
+
   if (modalOverlay) modalOverlay.classList.add('open');
 }
 
@@ -2419,9 +2441,11 @@ if (smEditSave) smEditSave.addEventListener('click', function() {
   var detail  = document.getElementById('sm-edit-detail').value;
   var apUrl   = document.getElementById('sm-edit-ap-url').value;
   var apText  = document.getElementById('sm-edit-ap-text').value;
+  var bilanIn = document.getElementById('sm-edit-bilan-url');
   currentCard.dataset.detail  = detail;
   currentCard.dataset.apUrl   = apUrl;
   currentCard.dataset.apText  = apText;
+  if (bilanIn) currentCard.dataset.bilanUrl = bilanIn.value;
   // Update visible .stage-ap if exists
   var apEl = currentCard.querySelector('.stage-ap');
   if (apText) {
@@ -2642,33 +2666,7 @@ attachInfoTags();
 // ═══════════════════════════════════════════════════════
 // BILAN DE STAGE — show/hide in stage modal
 // ═══════════════════════════════════════════════════════
-// Patch openStageModal to also handle bilan link
-var origOpenStageModal = openStageModal;
-openStageModal = function(card) {
-  origOpenStageModal(card);
-  var bilanUrl = card.dataset.bilanUrl || '';
-  var bilanSec = document.getElementById('sm-bilan-section');
-  var bilanLink = document.getElementById('sm-bilan-link');
-  if (bilanUrl && bilanSec && bilanLink) {
-    bilanLink.href = bilanUrl;
-    bilanSec.style.display = 'block';
-  } else if (bilanSec) {
-    bilanSec.style.display = 'none';
-  }
-  // Show edit bilan url field
-  var bilanInput = document.getElementById('sm-edit-bilan-url');
-  if (bilanInput) bilanInput.value = bilanUrl;
-};
-
-// Save bilan url on save
-var origSmEditSave = document.getElementById('sm-edit-save');
-if (origSmEditSave) {
-  origSmEditSave.addEventListener('click', function() {
-    if (!currentCard) return;
-    var bilanInput = document.getElementById('sm-edit-bilan-url');
-    if (bilanInput) currentCard.dataset.bilanUrl = bilanInput.value;
-  });
-}
+// bilan handling moved into openStageModal directly
 
 // ═══════════════════════════════════════════════════════
 // PRINT — force clean state
