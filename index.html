@@ -1049,6 +1049,59 @@ body {
 }
 .sf-btn.ok  { background: var(--mid); color: #fff; }
 .sf-btn.cancel { background: var(--silver); color: var(--slate); }
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE MOBILE
+═══════════════════════════════════════════════════════ */
+@media screen and (max-width: 800px) {
+
+  body {
+    padding: 0;
+    gap: 0;
+    background: #fff;
+    align-items: flex-start;
+    width: 100vw;
+    overflow-x: hidden;
+  }
+
+  #edit-bar {
+    width: 100vw;
+    border-radius: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 10px;
+    box-sizing: border-box;
+  }
+
+  /* zoom scales everything including absolutely positioned elements */
+  .page {
+    zoom: var(--page-zoom, 1);
+    width: 210mm;
+    min-height: auto;
+    max-height: none;
+  }
+
+  #stage-modal,
+  #xp-modal,
+  #info-modal {
+    width: 95vw !important;
+    max-height: 90vh;
+    zoom: 1; /* modals not zoomed */
+  }
+
+  #stage-modal-overlay,
+  #xp-modal-overlay,
+  #info-modal-overlay {
+    zoom: 1;
+  }
+
+  #edit-side-panel {
+    width: 160px;
+    zoom: 1;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2727,6 +2780,24 @@ window.addEventListener('afterprint', function() {
     });
   }
 })();
+
+// ═══════════════════════════════════════════════════════
+// RESPONSIVE — scale page to fit screen on mobile
+// ═══════════════════════════════════════════════════════
+function applyPageScale() {
+  var page = document.getElementById('page');
+  if (!page) return;
+  var vw = window.innerWidth;
+  var pageW = 794; // 210mm at 96dpi
+  if (vw < 800) {
+    var zoom = vw / pageW;
+    page.style.zoom = zoom;
+  } else {
+    page.style.zoom = '';
+  }
+}
+applyPageScale();
+window.addEventListener('resize', applyPageScale);
 
 // ═══════════════════════════════════════════════════════
 // INIT — apply all saved settings on load
